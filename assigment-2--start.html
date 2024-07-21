@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<title>MDIA 2294</title>
+
+	<style>
+		img {
+			margin: 5px;
+		}
+
+		img.clickable {
+			cursor: pointer;
+		}
+
+		#first-btn, #prev-btn, #next-btn, #last-btn {
+			cursor: pointer;
+		}
+	</style>
+
+</head>
+
+<body>
+
+	<h1>MDIA 2294: Assignment 2</h1>
+
+	<div style="text-align:center;">
+		<table>
+			<tr>
+				<td></td>
+				<td style="text-align:center;">
+					<div><img id="main-image" alt="Main Image" /></div>
+					<!-- you may or may not use this hidden textbox-->
+					<div><input id="current-index" /></div>
+				</td>
+				<td></td>
+
+			</tr>
+			<tr>
+				<td>
+					<img src="images/first.png" id="first-btn"/>
+					<img src="images/prev.png" id="prev-btn" />
+				</td>
+				<td>
+					<div id="thumbnail-area"></div>
+				</td>
+				<td>
+					<img src="images/next.png" id="next-btn" />
+					<img src="images/last.png" id="last-btn" />
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<script>
+		// Johann Chua - A01174894
+		// Assignment 2
+
+		// sets index number to 0 for referencing later on in the script
+		let curent_index = 0;
+		// Creates root names for all the images to later attach a string to reference the names of the images. Also creates index numbers from 0-4. 0 being the first name (piplup)
+		const imageRootNames = ["Piplup", "Elmo", "Psy", "Squirt", "Pika"];
+		
+		const first_load = () => {
+			// TODO: set the main image to the first image in the array (index 0)
+			//  Starts image on piplup because (imageRootNames[0])/Piplup being first in the index (index starting from 0)
+			set_main_image(0);
+		}
+
+		const set_main_image = (index) => {
+			// set the main-image src image based on the passed parameter
+			// Grabs the #main-image from the html and sets the img src to the concatenated string. 
+			document.querySelector("#main-image").src = "images/" + imageRootNames[index] + "Full.gif";
+			// grabs current index variable and sets it to the image selected 
+			current_index = index;
+			// update the thumbnails based on the current selection
+			// Call update_thumbnails to update based off which main image is currently displayed
+			update_thumbnails(index);
+		}
+
+		
+
+		// TODO: set the thumbnail images
+
+		const set_thumbnails = () => {
+			// TODO: declare a variable for the thumbnail strip html (optional)
+			// Grabs the array in imageRootNames and used to create thumbnail images.
+			imageRootNames.forEach((root, index) => {
+				// Variable set to create new "img" element in the html
+				const newThumb = document.createElement("img");
+				// Sets the above variable's img element to the concatenated string. 
+				newThumb.src = "images/" + root + "Thumb.gif";
+				// Create a new class name for the above variable to later attach an event listener and also used later to run the opacity styling.
+				newThumb.className = "clickable";
+				// TODO: loop through the global array and build the html
+				//       - add an onclick handler to each thumbnail to call set_main_image(index)
+				// Event Listener for thumbnail options for users to click on the "newThumb"'s and changes set_main_image to the selection.
+				newThumb.addEventListener("click", () => {
+					set_main_image(index);
+				});
+				// TODO: add the html to the divThumbArea
+				// Adds newThumb img elements to the #thumbnail-area in the html
+				document.querySelector("#thumbnail-area").appendChild(newThumb);
+			});
+		}
+
+		const update_thumbnails = (index) => {
+			// TODO: you'll need to loop through all thumbnails
+			//		- turn on an indicator (eg opacity:1.0) if it's the selected thumb
+			//		- turn off the indicator (eg opacity:0.75) if it's not
+			// Grabs the new ".clickable" element made from set_thumbnails and loops through the array to set styling options. 
+			// Ternary Operator to check if loop index is identical to index and changes to opacity to 1.0 if true and 0.25 if false 
+			// tbh idk if im making sense LOL
+			document.querySelectorAll(".clickable").forEach((icon, loop_index) => {
+				icon.style.opacity = (loop_index === index) ? "1.0" : "0.25";
+			});
+
+		}
+
+		// let current_image = 0;
+		// creating variables to attach an event listener to all these html elements
+		const first = document.querySelector("#first-btn");
+		const prev = document.querySelector("#prev-btn");
+		const next = document.querySelector("#next-btn");
+		const last = document.querySelector("#last-btn");
+
+
+		const set_nav_first = () => {
+			// TODO: navigate to the first image (this is the easy one since it's always index zero)
+			// calls set_main_image and attaching the index number to go to the first image. (Index #'s starting from 0)'
+			set_main_image(0);
+		}
+
+		const set_nav_last = () => {
+			// TODO: navigate to the last image (should work for any size array)
+			// calls set_main_image, attaching the index number to go to the last image. (Index #'s ending on 4)'
+			set_main_image(4); 
+		}
+
+		const set_nav_next = () => {
+			// TODO: move to the next image, unless at the end in which case show the first image
+			// Checks if the "current_index" is greater than or equal to the imageRootNames array. 
+			// In this case, imageRootNames.length -1 gives the last value in the array and runs the ternary operator. If true, set next_index to 0 (first index in the array) and add 1 to the array if true. 
+			const next_index = (current_index >= imageRootNames.length - 1) ? 0 : current_index + 1;
+			// calls set_main_image to display main image based off above operation
+			set_main_image(next_index);
+		}
+
+		const set_nav_prev = () => {
+			// TODO: move to the previous image, unless at the end in which case show the last image
+			// Opposite of above, checks if the current index is less than or equal to 0 which is the beginning of the array, if true, wraps to the last image in the array(4), if false, subtract 1 from the array
+			const prev_index = (current_index <= 0) ? imageRootNames.length -1 : current_index -1;
+			// Calls & Updates set_main_image to display main image based off above operation
+			set_main_image(prev_index);
+		}
+
+		// Runs set_thumbnails on page load to display the thumbnail images
+		set_thumbnails();
+		// "load" event listener to display set_main_image(0) as soon as the window finishes loading
+		window.addEventListener("load", first_load);
+		// Event Listeners for all the buttons and runs the appropriate function if "clicked"
+		first.addEventListener("click", set_nav_first);
+		last.addEventListener("click", set_nav_last);
+		next.addEventListener("click", set_nav_next);
+		prev.addEventListener("click", set_nav_prev);
+		
+
+	</script>
+
+</body>
+
+</html>
